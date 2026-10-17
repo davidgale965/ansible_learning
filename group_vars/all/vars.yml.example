@@ -1,0 +1,15 @@
+# ---------------------------------------------------------------------------
+# 1) Copy this file:  cp group_vars/all/vars.yml.example group_vars/all/vars.yml
+# 2) Fill in your real values
+# 3) Encrypt it:      ansible-vault encrypt group_vars/all/vars.yml
+# ---------------------------------------------------------------------------
+
+# GitHub personal access token (classic or fine-grained) with the scopes
+# your playbook needs (e.g. repo, workflow, admin:org).
+github_token: "ghp_YOUR_REAL_TOKEN_HERE"
+
+# GitHub user or organization name
+github_owner: "your-username"
+
+# Example repository name the playbook will touch
+github_repo: "ansible_learning"

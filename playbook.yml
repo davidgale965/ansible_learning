@@ -1,0 +1,31 @@
+---
+- name: Simple GitHub token demo using Ansible Vault
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  tasks:
+    - name: Fail early if no token is provided
+      ansible.builtin.fail:
+        msg: "github_token is not defined. Did you encrypt group_vars/all/vault.yml?"
+      when: github_token is undefined
+
+    - name: Prove the vaulted token is available (never prints the token)
+      ansible.builtin.debug:
+        msg: "GitHub token loaded from vault: ***HIDDEN*** (length {{ github_token | length }})"
+
+    - name: Call GitHub API to verify the token works
+      ansible.builtin.uri:
+        url: "https://api.github.com/user"
+        method: GET
+        return_content: true
+        headers:
+          Authorization: "Bearer {{ github_token }}"
+          Accept: "application/vnd.github+json"
+          X-GitHub-Api-Version: "2022-11-28"
+      register: github_user
+      failed_when: false
+
+    - name: Print authenticated GitHub login (never the token)
+      ansible.builtin.debug:
+        msg: "Authenticated as: {{ (github_user.json.login | default('unknown')) if github_user.status == 200 else 'auth failed (status ' + github_user.status|string + ')' }}"

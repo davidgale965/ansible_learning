@@ -1,0 +1,32 @@
+name: Ansible Vault Demo
+
+on:
+  workflow_dispatch:   # run manually from the Actions tab
+  push:
+    branches: ["main"]
+
+jobs:
+  ansible:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Install Ansible
+        run: pip install ansible
+
+      - name: Write vault password file from GitHub secret
+        run: printf '%s' "${VAULT_PASSWORD}" > .vault_pass
+        env:
+          VAULT_PASSWORD: ${{ secrets.ANSIBLE_VAULT_PASSWORD }}
+
+      - name: Run playbook (uses encrypted vault)
+        run: ansible-playbook playbook.yml
+        env:
+          # Not strictly needed since we pass .vault_pass, but harmless
+          ANSIBLE_HOST_KEY_CHECKING: "False"

@@ -1,0 +1,9 @@
+# Ansible vault password file - NEVER commit this
+.vault_pass
+
+# Local (unencrypted) vars if you create them
+group_vars/all/vars.yml
+
+.retry
+__pycache__/
+*.pyc
